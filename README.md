@@ -1,94 +1,170 @@
-# Flare Hardhat Starter Kit
+# LinkedUp Reliability Engine
 
-This is a starter kit for interacting with Flare blockchain.
-It provides example code for interacting with enshrined Flare protocol, and useful deployed contracts.
-It also demonstrates, how the official Flare smart contract periphery [package](https://www.npmjs.com/package/@flarenetwork/flare-periphery-contracts) can be used in your projects.
+Welcome to the **LinkedUp Reliability Engine** repository
 
-## Getting started
+This project was developed for the **Flare x Encode Club Hackathon** and aims to provide a decentralized, verifiable system for tracking user reliability based on real-world activity check-ins. It showcases the innovative use of **Flare's FDC (Flare Data Connector)** protocols by bridging operational Web2 data (from a Flutter app backend) into verifiable Web3 reputation scores.
 
-If you are new to Hardhat please check the [Hardhat getting started doc](https://hardhat.org/hardhat-runner/docs/getting-started#overview)
+---
 
-1. Clone and install dependencies:
+## About LinkedUp
 
-   ```console
-   git clone https://github.com/flare-foundation/flare-hardhat-starter.git
-   cd flare-hardhat-starter
-   ```
+LinkedUp is a mobile application (currently in development) designed to foster real-world social interaction through spontaneous and scheduled activities, particularly focused on sports. Users can:
 
-   and then run:
+View a map of nearby activities based on their location and interests.
 
-   ```console
-   yarn
-   ```
+Join ongoing or upcoming activities, or host their own.
 
-   or
+Match based on interests, time availability, activity type, and participant limits.
 
-   ```console
-   npm install
-   ```
+Form groups, make friends, and build a network based on shared experiences.
 
-2. Set up `.env` file
+Track reliability and participation over time.
 
-   ```console
-   mv .env.example .env
-   ```
+Use cases currently include organizing pickup games for soccer, tennis, hiking, and other sports activities. Future expansions may allow for broader activities such as walking meetups, study sessions, picnics, and more.
 
-3. Change the `PRIVATE_KEY` in the `.env` file to yours
+While LinkedUp is not yet released publicly, its architecture emphasizes community building and real-world accountability.
 
-4. Compile the project
+The LinkedUp Reliability Engine in this repository extends the LinkedUp platform by **providing a decentralized, blockchain-verified method for tracking and rewarding user reliability**.
 
-   ```console
-   yarn hardhat compile
-   ```
+---
 
-   or
+## Project Summary
 
-   ```console
-   npx hardhat compile
-   ```
+### Problem:
 
-   This will compile all `.sol` files in your `/contracts` folder.
-   It will also generate artifacts that will be needed for testing.
-   Contracts `Imports.sol` import MockContracts and Flare related mocks, thus enabling mocking of the contracts from typescript.
+Accountability and reliability are difficult to enforce in real-world social meetups. People often RSVP and then fail to attend, impacting the experience for others. Users have no easy way of knowing if the host or participants of an activity will actually show up, leading to wasted time and frustration.
 
-5. Run Tests
+### Solution:
 
-   ```console
-   yarn hardhat test
-   ```
+The LinkedUp Reliability Engine introduces a decentralized, verifiable reliability score based on real-world attendance, creating a powerful incentive system. Users start with a baseline reliability score (50 points) that improves (+5) or deteriorates (-5) based on their attendance behavior. As users consistently attend activities they join or host, their score increases, signaling their reliability to others. Additionally, the weather conditions during the activity influence the magnitude of score changes: attending during adverse weather (e.g., thunderstorms) yields a greater positive impact, while missing activities under milder conditions results in a relatively larger penalty. This dynamic encourages commitment even under challenging circumstances.
 
-   or
+When hosting an activity, a user's reliability score is publicly displayed to prospective participants. This allows participants to make informed decisions on whether to join, significantly increasing trust within the platform. Over time, higher reliability scores will become critical to building strong, dependable communities within LinkedUp.
 
-   ```console
-   npx hardhat test
-   ```
+Using attested activity check-in data from a Web2 database (Firestore), the system:
 
-6. Deploy
+Prepares a verifiable attestation via Flare's Verifier API.
 
-   Check the `hardhat.config.ts` file, where you define which networks you want to interact with.
-   Flare mainnet & test network details are already added in that file.
+Posts this proof to the Flare blockchain (Coston2 testnet).
 
-   Make sure that you have added API Keys in the `.env` file
+Updates user reliability scores on a custom smart contract.
 
-   ```console
-   npx hardhat run scripts/tryDeployment.ts
-   ```
+The project is fully decentralized post-data publishing and offers a novel approach to bridging Web2 and Web3 user reputation systems.
 
-## Repository structure
+> **Note:** LinkedUp (the mobile application) is still in development and has not yet been released. Live tests involving real users have been performed and are showcased in the video demo in the submission folder. 
+
+This repository focuses solely on the backend reliability engine demonstration.
+
+---
+
+## Architecture Overview
 
 ```
-├── contracts: Solidity smart contracts
-├── scripts: Typescript scripts that interact with the blockchain
-├── test
-├── hardhat.config.ts
-├── package.json
-├── README.md
-├── tsconfig.json
-└── yarn.lock
+LinkedUp App (private repo, separate)
+  └── Firebase Firestore (activity check-in data)
+         └── Firebase Cloud Functions (consolidates check-in data for the web2 api)
+                  └── Trigger Ngrok Local Server
+                           └── Hardhat Script (ReliabilityFdcProcessor.ts)
+                                    ├── Prepare Attestation (Flare Verifier API)
+                                    ├── Submit Proof (Flare FDC Contract)
+                                    └── Update Smart Contract (LinkedUpReliabilityBoard.sol)
+
 ```
 
-## Resources
+The flow is fully automated:
+- Every activity has a list of participants who checked-in on time
+- Check-in data batches every 15 minutes.
+- New snapshots are detected and processed.
+- Proofs are verified and stored on-chain.
+- Every users reliability score is updated based on their check-in data for the corresponding activity 
+- Snapshots are marked as processed.
 
-- [Flare Developer Hub](https://dev.flare.network/)
-- [Hardhat Guides](https://dev.flare.network/fdc/guides/hardhat)
-- [Hardhat Docs](https://hardhat.org/docs)
+> Full diagrams and detailed code walkthrough are available inside the repository.
+
+---
+
+## Key Technologies Used
+
+- **Flare Network** (Coston2 testnet)
+- **Flare FDC Protocols** (prepareRequest, submitAttestation, retrieveProof)
+- **Hardhat** (EVM development framework)
+- **Firebase** (Firestore database + Cloud Functions)
+- **Node.js** (Trigger server + processing scripts)
+- **Solidity** (LinkedUpReliabilityBoard smart contract)
+
+---
+
+## Smart Contract - LinkedUpReliabilityBoard.sol
+
+**Features:**
+- On-chain storage of user reliability scores.
+- Weather multipliers to reward check-ins under harsh conditions.
+- Track total check-ins and misses for each user.
+- Provide public views for reliability queries.
+
+**Core Functions:**
+- `updateReputation(proof)` — verifies and ingests attested data.
+- `getReputation(uuid)` — fetches a user's current reliability score.
+
+---
+
+## 📂 Repository Structure
+
+```
+/scripts/fdcExample/local-processor-agent.ts    ➔ Local server triggered by firestore executes the main script
+/scripts/fdcExample/ReliabilityFdcProcessor.ts  ➔ Main script orchestrating the full flow
+/scripts/fdcExample/Base.ts                     ➔ Shared helper functions provided by Flare
+/contracts/LinkedUpReliabilityBoard.sol         ➔ Smart contract source code
+```
+
+---
+
+## How to Observe System in Action
+
+This project operates using an internal, privately-hosted Firebase backend and a local server managed by the LinkedUp team.
+
+Although public users cannot run the system locally, you can observe the on-chain updates in real-time by monitoring the smart contract activity.
+
+Where to check:
+
+Coston2 Testnet Explorer: Track reputation updates at Coston2 Explorer
+
+# CHANGE THIS WITH FINAL CONTRACT DEPLOYMENT!
+Contract Address: 0x0262E78BF047C1100b1686bec7629a1f808f4F1C
+
+Transaction logs will reflect users' check-ins and the associated reputation updates processed by the Reliability Engine.
+
+Note: Full control and execution of the Reliability Engine scripts remain internal for demonstration and validation purposes.
+
+---
+
+## Disclosures
+
+- The **LinkedUp app** and its operational infrastructure are **private intellectual property**. This repository only includes the reliability engine and smart contract components.
+- No real-world users have been onboarded yet; the system has been tested in **isolated development environments**.
+- Testnet deployments only (Coston2). No mainnet interactions.
+
+---
+
+## Contributors
+
+- **afpaz** — Developer
+- **vasqq** — Developer
+---
+
+## Future Work
+
+- **Expand reputation model:** Integrate additional on-chain/off-chain behaviors.
+- **In-app reliability display:** Pull scores into the public LinkedUp profiles.
+- **Optimized batching:** Improve snapshot aggregation efficiency.
+- **Proof caching:** Add fallback mechanisms if DA Layer retrieval is delayed.
+- **Production deployment:** Integrate with Flare mainnet once app is released and Flare brings jsonApi attestation type to mainnet
+
+---
+
+## Final Notes
+
+The LinkedUp Reliability Engine demonstrates a **novel Web2 to Web3 bridge** for event-based reputation management. By leveraging Flare's infrastructure, it opens a path for decentralized trust models grounded in real-world actions.
+
+We believe this project showcases the potential of Flare FDC and highlights the innovation possible when bridging traditional mobile apps with decentralized verification systems.
+
+Thank you for reviewing our submission!
