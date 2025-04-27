@@ -173,6 +173,20 @@ The Coston2 testnet provided a reliable environment for testing my smart contrac
 
 ---
 
+## Submission Details
+
+Repository Link: [LinkedUp Reliability Engine GitHub](https://github.com/Vasqq/linkedup-reliability-engine)
+
+Deployed Contract Address:
+0x79e8066bB6638ADb91A2eCC8b6C7419102FD43a5
+
+Demo Transaction Hash:
+0x686ef396cfd9c649408da0dee92b9de910c94390bd2207bab0bd415c2c64869a
+
+The demo transaction reflects an on-chain reliability update for two users after participating in an activity.
+
+---
+
 ## Final Notes
 
 The LinkedUp Reliability Engine demonstrates a **novel Web2 to Web3 bridge** for event-based reputation management. By leveraging Flare's infrastructure, it opens a path for decentralized trust models grounded in real-world actions.
