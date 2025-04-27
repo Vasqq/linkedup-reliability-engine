@@ -12,3 +12,7 @@ typechain-types
 
 
 .DS_Store
+
+# .ts build ofiles
+dist/
+lib/
