@@ -14,7 +14,7 @@ let isProcessing = false;
 app.use(express.json());
 
 // Define the trigger endpoint
-app.post('/trigger-reputation-update', (req: Request, res: Response) => {
+app.post('/trigger-reliability-update', (req: Request, res: Response) => {
   console.log(`[${new Date().toISOString()}] Received trigger request.`);
 
   if (isProcessing) {
@@ -28,7 +28,7 @@ app.post('/trigger-reputation-update', (req: Request, res: Response) => {
 
   // Immediately send a response to the Cloud Function saying "Accepted"
   // The Cloud Function doesn't need to wait for the whole script to finish.
-  res.status(202).send('Accepted: Reputation update process started.');
+  res.status(202).send('Accepted: reliability update process started.');
 
   // Execute the Hardhat script as a child process
   exec(hardhatCommand, (error, stdout, stderr) => {
@@ -53,6 +53,6 @@ app.post('/trigger-reputation-update', (req: Request, res: Response) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Reputation trigger server listening on http://localhost:${port}`);
-  console.log(`Waiting for POST requests to /trigger-reputation-update`);
+  console.log(`reliability trigger server listening on http://localhost:${port}`);
+  console.log(`Waiting for POST requests to /trigger-reliability-update`);
 });

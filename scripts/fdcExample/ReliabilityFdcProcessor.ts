@@ -1,14 +1,15 @@
+// ReliabilityFdcProcessor.ts
 // Command to run this script
 // npx hardhat run scripts/fdcExample/JsonApi.ts --network coston2
 import axios from "axios";
 import { run, web3 } from "hardhat";
-import { LinkedUpReputationBoardInstance } from "../../typechain-types";
+import { LinkedUpReliabilityBoardInstance } from "../../typechain-types";
 import {
   prepareAttestationRequestBase,
   submitAttestationRequest,
   retrieveDataAndProofBase,
 } from "./Base";
-const LinkedUpReputationBoard = artifacts.require("LinkedUpReputationBoard");
+const LinkedUpReliabilityBoard = artifacts.require("LinkedUpReliabilityBoard");
 
 const {
   JQ_VERIFIER_URL_TESTNET,
@@ -89,7 +90,7 @@ async function retrieveDataAndProof(
 // Only used once to deploy contract manually
 async function deployAndVerifyContract() {
   const args: any[] = [];
-  const contract: LinkedUpReputationBoardInstance = await LinkedUpReputationBoard.new(...args);
+  const contract: LinkedUpReliabilityBoardInstance = await LinkedUpReliabilityBoard.new(...args);
   try {
     await run("verify:verify", {
       address: contract.address,
@@ -98,12 +99,12 @@ async function deployAndVerifyContract() {
   } catch (e: any) {
     console.log(e);
   }
-  console.log("LinkedUpReputationBoard deployed to", contract.address, "\n");
+  console.log("LinkedUpReliabilityBoard deployed to", contract.address, "\n");
   return contract;
 }
 
 async function interactWithContract(
-  repBoard: LinkedUpReputationBoardInstance,
+  repBoard: LinkedUpReliabilityBoardInstance,
   proof: any
 ) {
   console.log("Proof hex:", proof.response_hex, "\n");
@@ -181,13 +182,13 @@ async function main() {
   const proof = await retrieveDataAndProof(abiEncodedRequest, roundId);
 
   // Deploy a contract that will interact with the JSON data you are attesting
-  // const repBoard: LinkedUpReputationBoardInstance =
+  // const repBoard: LinkedUpReliabilityBoardInstance =
   //   await deployAndVerifyContract();
 
   // Step 7 in the User Workflow diagram
   // Interact with an already deployed contract
-  const repBoard: LinkedUpReputationBoardInstance =
-    await LinkedUpReputationBoard.at("0x0262E78BF047C1100b1686bec7629a1f808f4F1C");
+  const repBoard: LinkedUpReliabilityBoardInstance =
+    await LinkedUpReliabilityBoard.at("0x79e8066bB6638ADb91A2eCC8b6C7419102FD43a5");
 
   // Feed the attested data to your deployed contract
   await interactWithContract(repBoard, proof);
