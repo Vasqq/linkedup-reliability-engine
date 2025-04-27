@@ -154,10 +154,22 @@ Note: Full control and execution of the Reliability Engine scripts remain intern
 ## Future Work
 
 - **Expand reputation model:** Integrate additional on-chain/off-chain behaviors.
-- **In-app reliability display:** Pull scores into the public LinkedUp profiles.
+- **Show host reliability before joining:** Users will factor relaibility scorre into their decision to join an activity.
 - **Optimized batching:** Improve snapshot aggregation efficiency.
 - **Proof caching:** Add fallback mechanisms if DA Layer retrieval is delayed.
 - **Production deployment:** Integrate with Flare mainnet once app is released and Flare brings jsonApi attestation type to mainnet
+
+---
+
+## Feedback on Building with Flare
+
+The FDC was straightforward to integrate and very developer-friendly.
+
+The Encode Club/ Flare tutorials were verusy useful
+
+Having access to a JQ-based Verifier API made preparing attestations feel flexible and powerful.
+
+The Coston2 testnet provided a reliable environment for testing my smart contract.
 
 ---
 
