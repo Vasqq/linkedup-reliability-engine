@@ -2,7 +2,7 @@
 
 Welcome to the **LinkedUp Reliability Engine** repository
 
-This project was developed for the **Flare x Encode Club Hackathon** and aims to provide a decentralized, verifiable system for tracking user reliability based on real-world activity check-ins. It showcases the innovative use of **Flare's FDC (Flare Data Connector)** protocols by bridging operational Web2 data (from a Flutter app backend) into verifiable Web3 reputation scores.
+This project was developed for the **Flare x Encode Club Hackathon** and aims to provide a decentralized, verifiable system for tracking user reliability based on real-world activity check-ins. It showcases the innovative use of **Flare's FDC (Flare Data Connector)** protocols by bridging operational Web2 data (from a Flutter app backend) into verifiable Web3 reliability scores.
 
 ---
 
@@ -48,7 +48,7 @@ Posts this proof to the Flare blockchain (Coston2 testnet).
 
 Updates user reliability scores on a custom smart contract.
 
-The project is fully decentralized post-data publishing and offers a novel approach to bridging Web2 and Web3 user reputation systems.
+The project is fully decentralized post-data publishing and offers a novel approach to bridging Web2 and Web3 user reliability systems.
 
 > **Note:** LinkedUp (the mobile application) is still in development and has not yet been released. Live tests involving real users have been performed and are showcased in the video demo in the submission folder. 
 
@@ -126,12 +126,11 @@ Although public users cannot run the system locally, you can observe the on-chai
 
 Where to check:
 
-Coston2 Testnet Explorer: Track reputation updates at Coston2 Explorer
+Coston2 Testnet Explorer: Track reliability updates at Coston2 Explorer
 
-# CHANGE THIS WITH FINAL CONTRACT DEPLOYMENT!
-Contract Address: 0x0262E78BF047C1100b1686bec7629a1f808f4F1C
+Contract Address: 0x79e8066bB6638ADb91A2eCC8b6C7419102FD43a5
 
-Transaction logs will reflect users' check-ins and the associated reputation updates processed by the Reliability Engine.
+Transaction logs will reflect users' check-ins and the associated reliability updates processed by the Reliability Engine.
 
 Note: Full control and execution of the Reliability Engine scripts remain internal for demonstration and validation purposes.
 
@@ -153,7 +152,7 @@ Note: Full control and execution of the Reliability Engine scripts remain intern
 
 ## Future Work
 
-- **Expand reputation model:** Integrate additional on-chain/off-chain behaviors.
+- **Expand reliability model:** Integrate additional on-chain/off-chain behaviors.
 - **Show host reliability before joining:** Users will factor relaibility scorre into their decision to join an activity.
 - **Optimized batching:** Improve snapshot aggregation efficiency.
 - **Proof caching:** Add fallback mechanisms if DA Layer retrieval is delayed.
@@ -189,7 +188,7 @@ The demo transaction reflects an on-chain reliability update for two users after
 
 ## Final Notes
 
-The LinkedUp Reliability Engine demonstrates a **novel Web2 to Web3 bridge** for event-based reputation management. By leveraging Flare's infrastructure, it opens a path for decentralized trust models grounded in real-world actions.
+The LinkedUp Reliability Engine demonstrates a **novel Web2 to Web3 bridge** for event-based reliability management. By leveraging Flare's infrastructure, it opens a path for decentralized trust models grounded in real-world actions.
 
 We believe this project showcases the potential of Flare FDC and highlights the innovation possible when bridging traditional mobile apps with decentralized verification systems.
 
