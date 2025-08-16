@@ -102,8 +102,8 @@ The flow is fully automated:
 - Provide public views for reliability queries.
 
 **Core Functions:**
-- `updateReputation(proof)` — verifies and ingests attested data.
-- `getReputation(uuid)` — fetches a user's current reliability score.
+- `updateReliability(proof)` — verifies and ingests attested data.
+- `getreliability(uuid)` — fetches a user's current reliability score.
 
 ---
 

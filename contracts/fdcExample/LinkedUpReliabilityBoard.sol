@@ -17,29 +17,29 @@ struct Participant {
     bool checkedIn;
 }
 
-// User with cumulative reputation and attendance stats
+// User with cumulative reliability and attendance stats
 struct LinkedUpUser {
     string uuid;
-    int256 reputationScore;
+    int256 reliabilityScore;
     uint256 totalCheckIns;
     uint256 totalMisses;
 }
 
-interface ILinkedUpReputationBoard {
-    function updateReputation(IJsonApi.Proof calldata proof) external;
+interface ILinkedUpReliabilityBoard {
+    function updateReliability(IJsonApi.Proof calldata proof) external;
     function getAllUsers() external view returns (LinkedUpUser[] memory);
-    function getReputation(string calldata uuid) external view returns (int256);
+    function getReliability(string calldata uuid) external view returns (int256);
 }
 
-contract LinkedUpReputationBoard is ILinkedUpReputationBoard {
+contract LinkedUpReliabilityBoard is ILinkedUpReliabilityBoard {
     // Storage for user data
     mapping(string => LinkedUpUser) private users;
     string[] private userUuids;
 
     // Configurable constants
-    int256 public constant REPUTATION_GAIN = 5;
-    int256 public constant REPUTATION_LOSS = -5;
-    int256 public constant REPUTATION_START = 50;
+    int256 public constant RELIABILITY_GAIN = 5;
+    int256 public constant RELIABILITY_LOSS = -5;
+    int256 public constant RELIABILITY_START = 50;
 
     /// Verifies the FDC attestation
     function isJsonApiProofValid(IJsonApi.Proof calldata _proof) private view returns (bool) {
@@ -60,7 +60,7 @@ contract LinkedUpReputationBoard is ILinkedUpReputationBoard {
 
 
     /// Ingest and process FDC-attested participant check-in snapshot
-   function updateReputation(IJsonApi.Proof calldata proof) external override{
+   function updateReliability(IJsonApi.Proof calldata proof) external override{
     require(isJsonApiProofValid(proof), "Invalid proof");
 
     ActivitySnapshot[] memory activities = abi.decode(
@@ -79,7 +79,7 @@ contract LinkedUpReputationBoard is ILinkedUpReputationBoard {
                 userUuids.push(participant.uuid);
                 users[participant.uuid] = LinkedUpUser({
                     uuid: participant.uuid,
-                    reputationScore: REPUTATION_START,
+                    reliabilityScore: RELIABILITY_START,
                     totalCheckIns: 0,
                     totalMisses: 0
                 });
@@ -88,12 +88,12 @@ contract LinkedUpReputationBoard is ILinkedUpReputationBoard {
             (uint256 gainMultiplier, uint256 lossMultiplier) = getWeatherMultipliers(activity.weatherCode);
 
             if (participant.checkedIn) {
-                int256 adjustedGain = (REPUTATION_GAIN * int256(gainMultiplier)) / 100;
-                users[participant.uuid].reputationScore += adjustedGain;
+                int256 adjustedGain = (RELIABILITY_GAIN * int256(gainMultiplier)) / 100;
+                users[participant.uuid].reliabilityScore += adjustedGain;
                 users[participant.uuid].totalCheckIns += 1;
             } else {
-                int256 adjustedLoss = (REPUTATION_LOSS * int256(lossMultiplier)) / 100;
-                users[participant.uuid].reputationScore += adjustedLoss;
+                int256 adjustedLoss = (RELIABILITY_LOSS * int256(lossMultiplier)) / 100;
+                users[participant.uuid].reliabilityScore += adjustedLoss;
                 users[participant.uuid].totalMisses += 1;
             }
 
@@ -102,7 +102,7 @@ contract LinkedUpReputationBoard is ILinkedUpReputationBoard {
 }
 
 
-    /// Return all users with reputation
+    /// Return all users with reliability
     function getAllUsers() public view override returns (LinkedUpUser[] memory) {
         LinkedUpUser[] memory result = new LinkedUpUser[](userUuids.length);
         for (uint256 i = 0; i < userUuids.length; i++) {
@@ -111,9 +111,9 @@ contract LinkedUpReputationBoard is ILinkedUpReputationBoard {
         return result;
     }
 
-    /// Look up one user’s reputation
-    function getReputation(string calldata uuid) public view override returns (int256) {
-        return users[uuid].reputationScore;
+    /// Look up one user’s reliability
+    function getReliability(string calldata uuid) public view override returns (int256) {
+        return users[uuid].reliabilityScore;
     }
 
     /// Internal existence check
