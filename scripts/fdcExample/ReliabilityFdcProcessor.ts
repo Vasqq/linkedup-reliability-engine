@@ -9,6 +9,7 @@ import {
   submitAttestationRequest,
   retrieveDataAndProofBase,
 } from "./Base";
+
 const LinkedUpReliabilityBoard = artifacts.require("LinkedUpReliabilityBoard");
 
 const {
@@ -78,10 +79,7 @@ async function prepareAttestationRequest(
   );
 }
 
-async function retrieveDataAndProof(
-  abiEncodedRequest: string,
-  roundId: number
-) {
+async function retrieveDataAndProof(abiEncodedRequest: string, roundId: number) {
   const url = `${COSTON2_DA_LAYER_URL}api/v1/fdc/proof-by-request-round-raw`;
   console.log("Url:", url, "\n");
   return await retrieveDataAndProofBase(url, abiEncodedRequest, roundId);
@@ -116,7 +114,7 @@ async function interactWithContract(
   const decodedResponse = web3.eth.abi.decodeParameter(responseType, proof.response_hex);
   console.log("Decoded proof:", decodedResponse, "\n");
 
-  const tx = await repBoard.updateReputation({
+  const tx = await repBoard.updateReliability({
     merkleProof: proof.proof,
     data: decodedResponse,
   });
@@ -124,15 +122,15 @@ async function interactWithContract(
   console.log("Transaction:", tx.tx, "\n");
 
   const allUsers = await repBoard.getAllUsers();
-  console.log("All Users with Reputation:", allUsers, "\n");
+  console.log("All Users with reliability:", allUsers, "\n");
 }
 
 async function markSnapshotProcessed(snapshotId: string) {
   try {
     await axios.post(markProcessedUrl, { snapshotId });
-    console.log(`✅ Marked snapshot '${snapshotId}' as processed`);
+    console.log(`Marked snapshot '${snapshotId}' as processed`);
   } catch (err) {
-    console.error("❌ Failed to mark snapshot as processed:", err);
+    console.error("Failed to mark snapshot as processed:", err);
   }
 }
 
@@ -143,10 +141,10 @@ async function main() {
   console.log("ABI Signature:", abiSignature);
 
   let snapshotIdToMark: string;
+
   try {
     console.log(`Fetching snapshot details from ${apiUrl} to get the ID...`);
     const response = await axios.get(apiUrl);
-
     snapshotIdToMark = response.data.snapshotId;
 
     if (!snapshotIdToMark) {
@@ -154,7 +152,7 @@ async function main() {
     }
     console.log(`Found Snapshot ID to process: ${snapshotIdToMark}`);
   } catch (error: any) {
-    console.error("Failed to fetch initial snapshot data/ID from API:", error.message);
+    console.error("Failed to fetch snapshot data:", error.message);
     process.exit(1);
   }
 
