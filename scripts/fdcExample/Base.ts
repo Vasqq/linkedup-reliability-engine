@@ -1,24 +1,8 @@
-import hre, { ethers } from "hardhat";
-import {
-  HelpersInstance,
-  IFlareSystemsManagerInstance,
-  IFdcRequestFeeConfigurationsInstance,
-  IRelayInstance,
-} from "../../typechain-types";
-
-const Helpers = artifacts.require("Helpers");
-const FdcHub = artifacts.require("IFdcHub");
-const FdcRequestFeeConfigurations = artifacts.require(
-  "IFdcRequestFeeConfigurations"
-);
-const FlareSystemsManager = artifacts.require("IFlareSystemsManager");
-const IRelay = artifacts.require("IRelay");
-
-async function getHelpers() {
-  const helpers: HelpersInstance = await Helpers.new();
-  return helpers;
-}
-
+import helpersAbi from "../../abis/Helpers.json";
+import fdcHubAbi from "../../abis/FdcHub.json";
+import fdcFeeConfigAbi from "../../abis/FdcRequestFeeConfigurations.json";
+import flareSystemsManagerAbi from "../../abis/FlareSystemsManager.json";
+import relayAbi from "../../abis/Relay.json";
 function toHex(data: string) {
   var result = "";
   for (var i = 0; i < data.length; i++) {
