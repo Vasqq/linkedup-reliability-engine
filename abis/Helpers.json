@@ -1,0 +1,54 @@
+[
+    {
+        "inputs": [],
+        "name": "getFdcHub",
+        "outputs": [
+            {
+                "internalType": "contract IFdcHub",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getFdcRequestFeeConfigurations",
+        "outputs": [
+            {
+                "internalType": "contract IFdcRequestFeeConfigurations",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getFlareSystemsManager",
+        "outputs": [
+            {
+                "internalType": "contract IFlareSystemsManager",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getRelay",
+        "outputs": [
+            {
+                "internalType": "contract IRelay",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

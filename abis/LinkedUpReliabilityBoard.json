@@ -1,0 +1,200 @@
+[
+    {
+        "inputs": [],
+        "name": "RELIABILITY_GAIN",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "RELIABILITY_LOSS",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "RELIABILITY_START",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAllUsers",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "uuid",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "int256",
+                        "name": "reliabilityScore",
+                        "type": "int256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "totalCheckIns",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "totalMisses",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct LinkedUpUser[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "uuid",
+                "type": "string"
+            }
+        ],
+        "name": "getReliability",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "weatherCode",
+                "type": "uint256"
+            }
+        ],
+        "name": "getWeatherMultipliers",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "checkInMultiplier",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "missMultiplier",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bytes32[]",
+                        "name": "merkleProof",
+                        "type": "bytes32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "bytes32",
+                                "name": "attestationType",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "sourceId",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "votingRound",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "lowestUsedTimestamp",
+                                "type": "uint64"
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "string",
+                                        "name": "url",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "postprocessJq",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "internalType": "string",
+                                        "name": "abi_signature",
+                                        "type": "string"
+                                    }
+                                ],
+                                "internalType": "struct IJsonApi.RequestBody",
+                                "name": "requestBody",
+                                "type": "tuple"
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "bytes",
+                                        "name": "abi_encoded_data",
+                                        "type": "bytes"
+                                    }
+                                ],
+                                "internalType": "struct IJsonApi.ResponseBody",
+                                "name": "responseBody",
+                                "type": "tuple"
+                            }
+                        ],
+                        "internalType": "struct IJsonApi.Response",
+                        "name": "data",
+                        "type": "tuple"
+                    }
+                ],
+                "internalType": "struct IJsonApi.Proof",
+                "name": "proof",
+                "type": "tuple"
+            }
+        ],
+        "name": "updateReliability",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
