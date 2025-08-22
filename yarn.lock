@@ -1858,6 +1858,14 @@
   resolved "https://registry.npmjs.org/@types/mocha/-/mocha-10.0.10.tgz"
   integrity sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==
 
+"@types/node-fetch@^2.6.13":
+  version "2.6.13"
+  resolved "https://registry.npmjs.org/@types/node-fetch/-/node-fetch-2.6.13.tgz"
+  integrity sha512-QGpRVpzSaUs30JBSGPjOg4Uveu384erbHBoT1zeONvyCfwQxIkUshLAOqN/k9EjGviPRmWTTe6aH2qySWKTVSw==
+  dependencies:
+    "@types/node" "*"
+    form-data "^4.0.4"
+
 "@types/node@*", "@types/node@>=18.0.0":
   version "22.13.4"
   resolved "https://registry.npmjs.org/@types/node/-/node-22.13.4.tgz"
@@ -2765,9 +2773,9 @@ bn.js@^4.11.6:
   integrity sha512-k8TVBiPkPJT9uHLdOKfFpqcfprwBFOAAXXozRubr7R7PfIuKvQlzcI4M0pALeqXN09vdaMbUdUj+pass+uULAg==
 
 bn.js@^4.11.9:
-  version "4.12.1"
-  resolved "https://registry.npmjs.org/bn.js/-/bn.js-4.12.1.tgz"
-  integrity sha512-k8TVBiPkPJT9uHLdOKfFpqcfprwBFOAAXXozRubr7R7PfIuKvQlzcI4M0pALeqXN09vdaMbUdUj+pass+uULAg==
+  version "4.12.2"
+  resolved "https://registry.npmjs.org/bn.js/-/bn.js-4.12.2.tgz"
+  integrity sha512-n4DSx829VRTRByMRGdjQ9iqsN0Bh4OolPsFnaZBLcbi8iXcB+kJ9s7EnRt4wILZNV3kPLHkRVfOc/HvhC3ovDw==
 
 bn.js@^5.0.0, bn.js@^5.1.1:
   version "5.2.1"
@@ -3244,20 +3252,20 @@ cheerio-select@^2.1.0:
     domutils "^3.0.1"
 
 cheerio@^1.0.0-rc.2:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/cheerio/-/cheerio-1.0.0.tgz"
-  integrity sha512-quS9HgjQpdaXOvsZz82Oz7uxtXiy6UIsIQcpBj7HRw2M63Skasm9qlDocAM7jNuaxdhpPU7c4kJN+gA5MCu4ww==
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/cheerio/-/cheerio-1.1.2.tgz"
+  integrity sha512-IkxPpb5rS/d1IiLbHMgfPuS0FgiWTtFIm/Nj+2woXDLTZ7fOT2eqzgYbdMlLweqlHbsZjxEChoVK+7iph7jyQg==
   dependencies:
     cheerio-select "^2.1.0"
     dom-serializer "^2.0.0"
     domhandler "^5.0.3"
-    domutils "^3.1.0"
-    encoding-sniffer "^0.2.0"
-    htmlparser2 "^9.1.0"
-    parse5 "^7.1.2"
-    parse5-htmlparser2-tree-adapter "^7.0.0"
+    domutils "^3.2.2"
+    encoding-sniffer "^0.2.1"
+    htmlparser2 "^10.0.0"
+    parse5 "^7.3.0"
+    parse5-htmlparser2-tree-adapter "^7.1.0"
     parse5-parser-stream "^7.1.2"
-    undici "^6.19.5"
+    undici "^7.12.0"
     whatwg-mimetype "^4.0.0"
 
 chokidar@^3.5.3:
@@ -3679,9 +3687,9 @@ crypto-addr-codec@^0.1.7:
     sha3 "^2.1.1"
 
 css-select@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.npmjs.org/css-select/-/css-select-5.1.0.tgz"
-  integrity sha512-nwoRF1rvRRnnCqqY7updORDsuqKzqYJ28+oSMaJMMgOauh3fvwHqMS7EZpIPqK8GL+g9mKxF1vP/ZjSeNjEVHg==
+  version "5.2.2"
+  resolved "https://registry.npmjs.org/css-select/-/css-select-5.2.2.tgz"
+  integrity sha512-TizTzUddG/xYLA3NXodFM0fSbNizXjOKhqiQQwvhlspadZokn1KDy0NZFS0wuEubIYAV5/c1/lAr0TaaFXEXzw==
   dependencies:
     boolbase "^1.0.0"
     css-what "^6.1.0"
@@ -3690,9 +3698,9 @@ css-select@^5.1.0:
     nth-check "^2.0.1"
 
 css-what@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/css-what/-/css-what-6.1.0.tgz"
-  integrity sha512-HTUrgRJ7r4dsZKU6GjmpfRK1O76h97Z8MfS1G0FozR+oF2kG6Vfe8JE6zwrkbxigziPHinCJ+gCPjA9EaBDtRw==
+  version "6.2.2"
+  resolved "https://registry.npmjs.org/css-what/-/css-what-6.2.2.tgz"
+  integrity sha512-u/O3vwbptzhMs3L1fQE82ZSLHQQfto5gyZzwteVIEyeaY5Fc7R4dapF/BvRoSYFeqfBk4m0V1Vafq5Pjv25wvA==
 
 cssfilter@0.0.10:
   version "0.0.10"
@@ -3953,7 +3961,7 @@ domhandler@^5.0.2, domhandler@^5.0.3:
   dependencies:
     domelementtype "^2.3.0"
 
-domutils@^3.0.1, domutils@^3.1.0:
+domutils@^3.0.1, domutils@^3.2.1, domutils@^3.2.2:
   version "3.2.2"
   resolved "https://registry.npmjs.org/domutils/-/domutils-3.2.2.tgz"
   integrity sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==
@@ -4092,10 +4100,10 @@ encoding-down@^6.3.0:
     level-codec "^9.0.0"
     level-errors "^2.0.0"
 
-encoding-sniffer@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/encoding-sniffer/-/encoding-sniffer-0.2.0.tgz"
-  integrity sha512-ju7Wq1kg04I3HtiYIOrUrdfdDvkyO9s5XM8QAj/bN61Yo/Vb4vgJxy5vi4Yxk01gWHbrofpPtpxM8bKger9jhg==
+encoding-sniffer@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/encoding-sniffer/-/encoding-sniffer-0.2.1.tgz"
+  integrity sha512-5gvq20T6vfpekVtqrYQsSCFZ1wEg5+wW0/QaZMWkFr6BqD3NfKs0rLCx4rrVlSWJeZb5NBJgVLswK/w2MWU+Gw==
   dependencies:
     iconv-lite "^0.6.3"
     whatwg-encoding "^3.1.1"
@@ -4130,10 +4138,15 @@ enquirer@^2.3.0:
     ansi-colors "^4.1.1"
     strip-ansi "^6.0.1"
 
-entities@^4.2.0, entities@^4.5.0:
+entities@^4.2.0:
   version "4.5.0"
   resolved "https://registry.npmjs.org/entities/-/entities-4.5.0.tgz"
   integrity sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==
+
+entities@^6.0.0:
+  version "6.0.1"
+  resolved "https://registry.npmjs.org/entities/-/entities-6.0.1.tgz"
+  integrity sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==
 
 env-paths@^2.2.0, env-paths@^2.2.1:
   version "2.2.1"
@@ -4180,6 +4193,16 @@ es-object-atoms@^1.0.0:
   integrity sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==
   dependencies:
     es-errors "^1.3.0"
+
+es-set-tostringtag@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/es-set-tostringtag/-/es-set-tostringtag-2.1.0.tgz"
+  integrity sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==
+  dependencies:
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.6"
+    has-tostringtag "^1.0.2"
+    hasown "^2.0.2"
 
 es5-ext@^0.10.35, es5-ext@^0.10.62, es5-ext@^0.10.63, es5-ext@^0.10.64, es5-ext@~0.10.14:
   version "0.10.64"
@@ -4880,13 +4903,15 @@ form-data@^2.2.0:
     mime-types "^2.1.12"
     safe-buffer "^5.2.1"
 
-form-data@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/form-data/-/form-data-4.0.1.tgz"
-  integrity sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==
+form-data@^4.0.0, form-data@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.npmjs.org/form-data/-/form-data-4.0.4.tgz"
+  integrity sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
+    es-set-tostringtag "^2.1.0"
+    hasown "^2.0.2"
     mime-types "^2.1.12"
 
 form-data@~2.3.2:
@@ -5525,15 +5550,15 @@ hosted-git-info@^2.1.4:
   resolved "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.8.9.tgz"
   integrity sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==
 
-htmlparser2@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.npmjs.org/htmlparser2/-/htmlparser2-9.1.0.tgz"
-  integrity sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==
+htmlparser2@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.npmjs.org/htmlparser2/-/htmlparser2-10.0.0.tgz"
+  integrity sha512-TwAZM+zE5Tq3lrEHvOlvwgj1XLWQCtaaibSN11Q+gGBAS7Y1uZSWwXXRe4iF6OXnaq1riyQAPFOBtYc77Mxq0g==
   dependencies:
     domelementtype "^2.3.0"
     domhandler "^5.0.3"
-    domutils "^3.1.0"
-    entities "^4.5.0"
+    domutils "^3.2.1"
+    entities "^6.0.0"
 
 http-basic@^8.1.1:
   version "8.1.3"
@@ -7236,7 +7261,7 @@ parse-json@^2.2.0:
   dependencies:
     error-ex "^1.2.0"
 
-parse5-htmlparser2-tree-adapter@^7.0.0:
+parse5-htmlparser2-tree-adapter@^7.1.0:
   version "7.1.0"
   resolved "https://registry.npmjs.org/parse5-htmlparser2-tree-adapter/-/parse5-htmlparser2-tree-adapter-7.1.0.tgz"
   integrity sha512-ruw5xyKs6lrpo9x9rCZqZZnIUntICjQAd0Wsmp396Ul9lN/h+ifgVV1x1gZHi8euej6wTfpqX8j+BFQxF0NS/g==
@@ -7251,12 +7276,12 @@ parse5-parser-stream@^7.1.2:
   dependencies:
     parse5 "^7.0.0"
 
-parse5@^7.0.0, parse5@^7.1.2:
-  version "7.2.1"
-  resolved "https://registry.npmjs.org/parse5/-/parse5-7.2.1.tgz"
-  integrity sha512-BuBYQYlv1ckiPdQi/ohiivi9Sagc9JG+Ozs0r7b/0iK3sKmrb0b9FdWdBbOdx6hBCM/F9Ir82ofnBhtZOjCRPQ==
+parse5@^7.0.0, parse5@^7.3.0:
+  version "7.3.0"
+  resolved "https://registry.npmjs.org/parse5/-/parse5-7.3.0.tgz"
+  integrity sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==
   dependencies:
-    entities "^4.5.0"
+    entities "^6.0.0"
 
 parseurl@^1.3.3, parseurl@~1.3.3:
   version "1.3.3"
@@ -9215,10 +9240,10 @@ undici@^5.14.0:
   dependencies:
     "@fastify/busboy" "^2.0.0"
 
-undici@^6.19.5:
-  version "6.21.1"
-  resolved "https://registry.npmjs.org/undici/-/undici-6.21.1.tgz"
-  integrity sha512-q/1rj5D0/zayJB2FraXdaWxbhWiNKDvu8naDT2dl1yTlvJp4BLtOcp2a5BvgGNQpYYJzau7tf1WgKv3b+7mqpQ==
+undici@^7.12.0:
+  version "7.14.0"
+  resolved "https://registry.npmjs.org/undici/-/undici-7.14.0.tgz"
+  integrity sha512-Vqs8HTzjpQXZeXdpsfChQTlafcMQaaIwnGwLam1wudSSjlJeQ3bw1j+TLPePgrCnCpUXx7Ba5Pdpf5OBih62NQ==
 
 universalify@^0.1.0:
   version "0.1.2"
@@ -9852,7 +9877,7 @@ web3-utils@1.10.0:
     randombytes "^2.1.0"
     utf8 "3.0.0"
 
-web3@^1, web3@^1.0.0-beta.34, web3@^1.0.0-beta.36, web3@^1.2.1:
+web3@^1, web3@^1.0.0-beta.34, web3@^1.0.0-beta.36, web3@^1.10.4, web3@^1.2.1:
   version "1.10.4"
   resolved "https://registry.npmjs.org/web3/-/web3-1.10.4.tgz"
   integrity sha512-kgJvQZjkmjOEKimx/tJQsqWfRDPTTcBfYPa9XletxuHLpHcXdx67w8EFn5AW3eVxCutE9dTVHgGa9VYe8vgsEA==
