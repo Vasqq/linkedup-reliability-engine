@@ -1,68 +1,99 @@
-import hre, { ethers } from "hardhat";
-import {
-  HelpersInstance,
-  IFlareSystemsManagerInstance,
-  IFdcRequestFeeConfigurationsInstance,
-  IRelayInstance,
-} from "../../typechain-types";
+// functions/src/reliability/Base.ts
 
-const Helpers = artifacts.require("Helpers");
-const FdcHub = artifacts.require("IFdcHub");
-const FdcRequestFeeConfigurations = artifacts.require(
-  "IFdcRequestFeeConfigurations"
-);
-const FlareSystemsManager = artifacts.require("IFlareSystemsManager");
-const IRelay = artifacts.require("IRelay");
+// External dependencies
+import { ethers } from "ethers";
+import fetch from "node-fetch";
 
-async function getHelpers() {
-  const helpers: HelpersInstance = await Helpers.new();
-  return helpers;
+// Load environment variables (injected via dotenv locally or Firebase config in cloud)
+import * as dotenv from "dotenv";
+dotenv.config();
+
+/*
+ * abis for Flare contracts that this base module depends on.
+ * These must be exported from your Hardhat artifacts and trimmed down to ABI-only JSON.
+ * Place them in functions/abis/
+ */
+import helpersAbi from "../../abis/Helpers.json";
+import fdcHubAbi from "../../abis/FdcHub.json";
+import fdcFeeConfigAbi from "../../abis/FdcRequestFeeConfigurations.json";
+import flareSystemsManagerAbi from "../../abis/FlareSystemsManager.json";
+import relayAbi from "../../abis/Relay.json";
+
+// Environment variables
+const { COSTON2_RPC_URL, PRIVATE_KEY } = process.env;
+if (!COSTON2_RPC_URL || !PRIVATE_KEY) {
+  throw new Error("Missing COSTON2_RPC_URL or PRIVATE_KEY in environment");
 }
 
+// Provider and signer
+const provider = new ethers.JsonRpcProvider(COSTON2_RPC_URL);
+const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+
+/*
+ * Converts a string to hex with zero-padding.
+ */
 function toHex(data: string) {
-  var result = "";
-  for (var i = 0; i < data.length; i++) {
+  let result = "";
+  for (let i = 0; i < data.length; i++) {
     result += data.charCodeAt(i).toString(16);
   }
   return result.padEnd(64, "0");
 }
 
+/*
+ * Converts a UTF-8 string to a hex string with 0x prefix.
+ */
 function toUtf8HexString(data: string) {
   return "0x" + toHex(data);
 }
 
+/*
+ * Sleep helper.
+ */
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/*
+ * Connects to the FdcHub contract using its address from Helpers.
+ */
 async function getFdcHub() {
-  const helpers: HelpersInstance = await getHelpers();
-  const fdcHubAddress: string = await helpers.getFdcHub();
-  return await FdcHub.at(fdcHubAddress);
+  // const helpers = await getHelpers();
+  const fdcHubAddress: string = "0x48aC463d7975828989331F4De43341627b9c5f1D";
+  return new ethers.Contract(fdcHubAddress, fdcHubAbi, wallet);
 }
 
+/*
+ * Connects to the FlareSystemsManager contract using its address from Helpers.
+ */
 async function getFlareSystemsManager() {
-  const helpers: HelpersInstance = await getHelpers();
-  const flareSystemsManagerAddress: string =
-    await helpers.getFlareSystemsManager();
-  return await FlareSystemsManager.at(flareSystemsManagerAddress);
+  // const helpers = await getHelpers();
+  // const addr: string = await helpers.getFlareSystemsManager();
+  const addr: string = "0xA90Db6D10F856799b10ef2A77EBCbF460aC71e52";
+  return new ethers.Contract(addr, flareSystemsManagerAbi, wallet);
 }
 
+/*
+ * Gets the request fee for a given ABI-encoded request.
+ */
 async function getFdcRequestFee(abiEncodedRequest: string) {
-  const helpers: HelpersInstance = await getHelpers();
-  const fdcRequestFeeConfigurationsAddress: string =
-    await helpers.getFdcRequestFeeConfigurations();
-  const fdcRequestFeeConfigurations: IFdcRequestFeeConfigurationsInstance =
-    await FdcRequestFeeConfigurations.at(fdcRequestFeeConfigurationsAddress);
-  return await fdcRequestFeeConfigurations.getRequestFee(abiEncodedRequest);
+  // const helpers = await getHelpers();
+  // const addr: string = await helpers.getFdcRequestFeeConfigurations();
+  const addr: string = "0x191a1282Ac700edE65c5B0AaF313BAcC3eA7fC7e"
+  const contract = new ethers.Contract(addr, fdcFeeConfigAbi, wallet);
+  return await contract.getRequestFee(abiEncodedRequest);
 }
 
 async function getRelay() {
-  const helpers: HelpersInstance = await getHelpers();
-  const relayAddress: string = await helpers.getRelay();
-  return await IRelay.at(relayAddress);
+  // const helpers: HelpersInstance = await getHelpers();
+  // const relayAddress: string = await helpers.getRelay();
+  const relayAddress: string = "0x97702e350CaEda540935d92aAf213307e9069784";
+  return new ethers.Contract(relayAddress, relayAbi, wallet);
 }
 
+/*
+ * Prepares an attestation request by POSTing to the verifier API.
+ */
 async function prepareAttestationRequestBase(
   url: string,
   apiKey: string,
@@ -75,9 +106,9 @@ async function prepareAttestationRequestBase(
   const sourceId = toUtf8HexString(sourceIdBase);
 
   const request = {
-    attestationType: attestationType,
-    sourceId: sourceId,
-    requestBody: requestBody,
+    attestationType,
+    sourceId,
+    requestBody,
   };
   console.log("Prepared request:\n", request, "\n");
 
@@ -89,9 +120,9 @@ async function prepareAttestationRequestBase(
     },
     body: JSON.stringify(request),
   });
-  if (response.status != 200) {
+  if (response.status !== 200) {
     throw new Error(
-      `Response status is not OK, status ${response.status} ${response.statusText}\n`
+      `Response status is not OK: ${response.status} ${response.statusText}\n`
     );
   }
   console.log("Response status is OK\n");
@@ -99,14 +130,20 @@ async function prepareAttestationRequestBase(
   return await response.json();
 }
 
-async function calculateRoundId(transaction: any) {
-  const blockNumber = transaction.receipt.blockNumber;
-  const block = await ethers.provider.getBlock(blockNumber);
+/*
+ * Calculates the FDC round ID given a submitted transaction.
+ */
+async function calculateRoundId(tx: ethers.TransactionResponse) {
+  const receipt = await tx.wait();
+
+  if (!receipt) {
+    throw new Error("Transaction receipt missing");
+  }
+  const block = await provider.getBlock(receipt.blockNumber);
   const blockTimestamp = BigInt(block!.timestamp);
 
-  const flareSystemsManager: IFlareSystemsManagerInstance =
-    await getFlareSystemsManager();
-  const firsVotingRoundStartTs = BigInt(
+  const flareSystemsManager = await getFlareSystemsManager();
+  const firstVotingRoundStartTs = BigInt(
     await flareSystemsManager.firstVotingRoundStartTs()
   );
   const votingEpochDurationSeconds = BigInt(
@@ -114,15 +151,11 @@ async function calculateRoundId(transaction: any) {
   );
 
   console.log("Block timestamp:", blockTimestamp, "\n");
-  console.log("First voting round start ts:", firsVotingRoundStartTs, "\n");
-  console.log(
-    "Voting epoch duration seconds:",
-    votingEpochDurationSeconds,
-    "\n"
-  );
+  console.log("First voting round start ts:", firstVotingRoundStartTs, "\n");
+  console.log("Voting epoch duration seconds:", votingEpochDurationSeconds, "\n");
 
   const roundId = Number(
-    (blockTimestamp - firsVotingRoundStartTs) / votingEpochDurationSeconds
+    (blockTimestamp - firstVotingRoundStartTs) / votingEpochDurationSeconds
   );
   console.log("Calculated round id:", roundId, "\n");
   console.log(
@@ -133,39 +166,41 @@ async function calculateRoundId(transaction: any) {
   return roundId;
 }
 
+/*
+ * Submits an attestation request to FdcHub.
+ */
 async function submitAttestationRequest(abiEncodedRequest: string) {
   const fdcHub = await getFdcHub();
-
   const requestFee = await getFdcRequestFee(abiEncodedRequest);
 
-  const transaction = await fdcHub.requestAttestation(abiEncodedRequest, {
+  const tx = await fdcHub.requestAttestation(abiEncodedRequest, {
     value: requestFee,
   });
-  console.log("Submitted request:", transaction.tx, "\n");
+  console.log("Submitted request:", tx.hash, "\n");
 
-  const roundId = await calculateRoundId(transaction);
+  const roundId = await calculateRoundId(tx);
   console.log(
-    `Check round progress at: https://${hre.network.name}-systems-explorer.flare.rocks/voting-epoch/${roundId}?tab=fdc\n`
+    `Check round progress at: https://coston2-systems-explorer.flare.rocks/voting-epoch/${roundId}?tab=fdc\n`
   );
   return roundId;
 }
 
+/*
+ * Helper for posting to the DA Layer and polling until proof is ready.
+ */
 async function postRequestToDALayer(
   url: string,
   request: any,
-  watchStatus: boolean = false
+  watchStatus = false
 ) {
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      //   "X-API-KEY": "",
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
   });
-  if (watchStatus && response.status != 200) {
+  if (watchStatus && response.status !== 200) {
     throw new Error(
-      `Response status is not OK, status ${response.status} ${response.statusText}\n`
+      `Response status is not OK: ${response.status} ${response.statusText}\n`
     );
   } else if (watchStatus) {
     console.log("Response status is OK\n");
@@ -173,29 +208,28 @@ async function postRequestToDALayer(
   return await response.json();
 }
 
+/*
+ * Retrieves data + proof from the DA Layer, retrying until proof is finalized.
+ */
 async function retrieveDataAndProofBase(
   url: string,
   abiEncodedRequest: string,
   roundId: number
 ) {
   console.log("Waiting for the round to finalize...");
-  // We check every 10 seconds if the round is finalized
-  const relay: IRelayInstance = await getRelay();
+  const relay = await getRelay();
   while (!(await relay.isFinalized(200, roundId))) {
     await sleep(30000);
   }
   console.log("Round finalized!\n");
 
-  const request = {
-    votingRoundId: roundId,
-    requestBytes: abiEncodedRequest,
-  };
+  const request = { votingRoundId: roundId, requestBytes: abiEncodedRequest };
   console.log("Prepared request:\n", request, "\n");
 
   await sleep(10000);
-  var proof = await postRequestToDALayer(url, request, true);
+  let proof = await postRequestToDALayer(url, request, true);
   console.log("Waiting for the DA Layer to generate the proof...");
-  while (proof.response_hex == undefined) {
+  while (!proof.response_hex) {
     await sleep(10000);
     proof = await postRequestToDALayer(url, request, false);
   }
@@ -205,6 +239,7 @@ async function retrieveDataAndProofBase(
   return proof;
 }
 
+// Exported API
 export {
   toUtf8HexString,
   sleep,

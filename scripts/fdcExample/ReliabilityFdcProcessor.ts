@@ -1,21 +1,22 @@
-// ReliabilityFdcProcessor.ts
-// Command to run this script
-// npx hardhat run scripts/fdcExample/JsonApi.ts --network coston2
+// functions/src/reliability/ReliabilityFdcProcessor.ts
 import axios from "axios";
-import { run, web3 } from "hardhat";
-import { LinkedUpReliabilityBoardInstance } from "../../typechain-types";
+import { ethers } from "ethers";
+import Web3 from "web3";
 import {
   prepareAttestationRequestBase,
   submitAttestationRequest,
   retrieveDataAndProofBase,
 } from "./Base";
-
-const LinkedUpReliabilityBoard = artifacts.require("LinkedUpReliabilityBoard");
-
+import jsonApiVerificationAbi from "../../abis/jsonApiVerification.json";
+import * as dotenv from "dotenv";
+dotenv.config();
+// Environment variables must be set with `firebase functions:config:set`
 const {
   JQ_VERIFIER_URL_TESTNET,
   JQ_VERIFIER_API_KEY_TESTNET,
   COSTON2_DA_LAYER_URL,
+  PRIVATE_KEY,
+  COSTON2_RPC_URL,
 } = process.env;
 
 // Request data
@@ -54,6 +55,9 @@ const attestationTypeBase = "IJsonApi";
 const sourceIdBase = "WEB2";
 const verifierUrlBase = JQ_VERIFIER_URL_TESTNET;
 
+import reliabilityBoardAbi from "../../abis/LinkedUpReliabilityBoard.json";
+const CONTRACT_ADDRESS = process.env.LINKEDUP_CONTRACT_ADDRESS!;
+
 async function prepareAttestationRequest(
   apiUrl: string,
   postprocessJq: string,
@@ -81,36 +85,26 @@ async function prepareAttestationRequest(
 
 async function retrieveDataAndProof(abiEncodedRequest: string, roundId: number) {
   const url = `${COSTON2_DA_LAYER_URL}api/v1/fdc/proof-by-request-round-raw`;
-  console.log("Url:", url, "\n");
   return await retrieveDataAndProofBase(url, abiEncodedRequest, roundId);
 }
 
-// Only used once to deploy contract manually
-async function deployAndVerifyContract() {
-  const args: any[] = [];
-  const contract: LinkedUpReliabilityBoardInstance = await LinkedUpReliabilityBoard.new(...args);
-  try {
-    await run("verify:verify", {
-      address: contract.address,
-      constructorArguments: args,
-    });
-  } catch (e: any) {
-    console.log(e);
+async function interactWithContract(proof: any) {
+  if (!PRIVATE_KEY || !COSTON2_RPC_URL) {
+    throw new Error("Missing PRIVATE_KEY or COSTON2_RPC_URL in environment");
   }
-  console.log("LinkedUpReliabilityBoard deployed to", contract.address, "\n");
-  return contract;
-}
-
-async function interactWithContract(
-  repBoard: LinkedUpReliabilityBoardInstance,
-  proof: any
-) {
   console.log("Proof hex:", proof.response_hex, "\n");
+  const provider = new ethers.JsonRpcProvider(COSTON2_RPC_URL);
+  const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+  const repBoard = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    reliabilityBoardAbi,
+    wallet
+  );
 
-  const IJsonApiVerification = await artifacts.require("IJsonApiVerification");
-  const responseType = IJsonApiVerification._json.abi[0].inputs[0].components[1];
+  const responseType = (jsonApiVerificationAbi as any).abi[0].inputs[0].components[1];
   console.log("Response type:", responseType, "\n");
 
+  const web3 = new Web3();
   const decodedResponse = web3.eth.abi.decodeParameter(responseType, proof.response_hex);
   console.log("Decoded proof:", decodedResponse, "\n");
 
@@ -119,7 +113,9 @@ async function interactWithContract(
     data: decodedResponse,
   });
 
-  console.log("Transaction:", tx.tx, "\n");
+  console.log("Transaction sent:", tx.hash);
+  await tx.wait();
+  console.log("Transaction confirmed");
 
   const allUsers = await repBoard.getAllUsers();
   console.log("All Users with reliability:", allUsers, "\n");
@@ -134,68 +130,36 @@ async function markSnapshotProcessed(snapshotId: string) {
   }
 }
 
-async function main() {
-
-  console.log("API URL:", apiUrl);
-  console.log("JQ Filter:", postprocessJq);
-  console.log("ABI Signature:", abiSignature);
-
+/**
+ * Main job function to be called from Firebase
+ */
+export async function processReliabilitySnapshot() {
   let snapshotIdToMark: string;
 
   try {
-    console.log(`Fetching snapshot details from ${apiUrl} to get the ID...`);
     const response = await axios.get(apiUrl);
     snapshotIdToMark = response.data.snapshotId;
-
     if (!snapshotIdToMark) {
       throw new Error("API response did not contain a snapshotId property.");
     }
-    console.log(`Found Snapshot ID to process: ${snapshotIdToMark}`);
+    else {
+      console.log("Snapshot ID found:", snapshotIdToMark);
+    }
   } catch (error: any) {
     console.error("Failed to fetch snapshot data:", error.message);
-    process.exit(1);
+    return;
   }
 
-  // Prepare attestation request using the verifier server 
-  // Step 1 & 2 in the User Workflow diagram
-  const data = await prepareAttestationRequest(
-    apiUrl,
-    postprocessJq,
-    abiSignature
-  );
-  console.log("Data:", data, "\n");
-
+  const data = await prepareAttestationRequest(apiUrl, postprocessJq, abiSignature);
   if (data.status !== "VALID") {
     console.error("Verifier returned INVALID. Check JQ or ABI formatting.");
-    process.exit(1);
+    return;
   }
 
   const abiEncodedRequest = data.abiEncodedRequest;
-  // Submit the attestation request to the FDC contract
-  // Step 3 in the User Workflow diagram
   const roundId = await submitAttestationRequest(abiEncodedRequest);
-
-  // Retrieve the attested data and proof from the FDC contract
-  // Step 6 in the User Workflow diagram
   const proof = await retrieveDataAndProof(abiEncodedRequest, roundId);
 
-  // Deploy a contract that will interact with the JSON data you are attesting
-  // const repBoard: LinkedUpReliabilityBoardInstance =
-  //   await deployAndVerifyContract();
-
-  // Step 7 in the User Workflow diagram
-  // Interact with an already deployed contract
-  const repBoard: LinkedUpReliabilityBoardInstance =
-    await LinkedUpReliabilityBoard.at("0x79e8066bB6638ADb91A2eCC8b6C7419102FD43a5");
-
-  // Feed the attested data to your deployed contract
-  await interactWithContract(repBoard, proof);
-
-  // Finally mark the snapshot as processed
-  console.log("Marking Snapshot as Processed via API...");
+  await interactWithContract(proof);
   await markSnapshotProcessed(snapshotIdToMark);
 }
-
-main().then((data) => {
-  process.exit(0);
-});

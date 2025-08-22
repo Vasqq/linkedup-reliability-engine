@@ -54,6 +54,8 @@ The project is fully decentralized post-data publishing and offers a novel appro
 
 This repository focuses solely on the backend reliability engine demonstration.
 
+Access to the app's source code will be given on a request basis.
+
 ---
 
 ## Architecture Overview
@@ -62,11 +64,10 @@ This repository focuses solely on the backend reliability engine demonstration.
 LinkedUp App (private repo, separate)
   └── Firebase Firestore (activity check-in data)
          └── Firebase Cloud Functions (consolidates check-in data for the web2 api)
-                  └── Trigger Ngrok Local Server
-                           └── Hardhat Script (ReliabilityFdcProcessor.ts)
-                                    ├── Prepare Attestation (Flare Verifier API)
-                                    ├── Submit Proof (Flare FDC Contract)
-                                    └── Update Smart Contract (LinkedUpReliabilityBoard.sol)
+                └── Reliability Update Script (ReliabilityFdcProcessor.ts)
+                        ├── Prepare Attestation (Flare Verifier API)
+                        ├── Submit Proof (Flare FDC Contract)
+                        └── Update Smart Contract (LinkedUpReliabilityBoard.sol)
 
 ```
 
@@ -110,7 +111,6 @@ The flow is fully automated:
 ## 📂 Repository Structure
 
 ```
-/scripts/fdcExample/local-processor-agent.ts    ➔ Local server triggered by firestore executes the main script
 /scripts/fdcExample/ReliabilityFdcProcessor.ts  ➔ Main script orchestrating the full flow
 /scripts/fdcExample/Base.ts                     ➔ Shared helper functions provided by Flare
 /contracts/LinkedUpReliabilityBoard.sol         ➔ Smart contract source code
@@ -128,7 +128,7 @@ Where to check:
 
 Coston2 Testnet Explorer: Track reliability updates at Coston2 Explorer
 
-Contract Address: 0x79e8066bB6638ADb91A2eCC8b6C7419102FD43a5
+Contract Address: 0x0xBE8BEAab49cdb09892D1d60864cE32190EA6d6D4
 
 Transaction logs will reflect users' check-ins and the associated reliability updates processed by the Reliability Engine.
 
@@ -141,6 +141,7 @@ Note: Full control and execution of the Reliability Engine scripts remain intern
 - The **LinkedUp app** and its operational infrastructure are **private intellectual property**. This repository only includes the reliability engine and smart contract components.
 - No real-world users have been onboarded yet; the system has been tested in **isolated development environments**.
 - Testnet deployments only (Coston2). No mainnet interactions.
+- Access to the private LinkedUp repo has been given temporarily to the judges during the Encode Club Incubator
 
 ---
 
@@ -152,11 +153,21 @@ Note: Full control and execution of the Reliability Engine scripts remain intern
 
 ## Future Work
 
-- **Expand reliability model:** Integrate additional on-chain/off-chain behaviors.
-- **Show host reliability before joining:** Users will factor relaibility scorre into their decision to join an activity.
-- **Optimized batching:** Improve snapshot aggregation efficiency.
-- **Proof caching:** Add fallback mechanisms if DA Layer retrieval is delayed.
-- **Production deployment:** Integrate with Flare mainnet once app is released and Flare brings jsonApi attestation type to mainnet
+## Future Work  
+
+- **Expand reliability model:** Move beyond attendance to include other signals of reliability (e.g. hosting consistency, cancellations, timeliness), blending on-chain and off-chain behaviors.  
+- **In-app reliability display:** Surface host and participant reliability scores directly in the LinkedUp app before users decide to join, strengthening trust and decision-making.  
+- **Granular updates (vs batching):** Transition from batching snapshots into processing activity check-ins individually, leveraging FDC’s ability to attest per-activity data.  
+- **Resilience improvements:** Add proof caching and retries to handle DA Layer delays, ensuring idempotent and reliable pipeline execution.  
+- **Reward layer:** Introduce $FLR payouts to high-reliability users (especially hosts) to incentivize dependable community building and bootstrap mainstream Web3 adoption.  
+- **LinkedUp Token (LKUP):** Launch a native LinkedUp token to power reliability incentives and governance. This token would serve as the backbone for on-chain participation, rewards, and long-term ecosystem sustainability.  
+- **Staking for activity reservations:** Require participants to stake LKUP tokens (or $FLR) to reserve their spot in an activity.  
+  - If they attend → tokens are returned.  
+  - If they don’t show up → staked tokens are automatically transferred to the host or community pool as a penalty.  
+  - This creates real accountability and ensures commitment to activities.  
+- **Production deployment:** Move from Coston2 to Flare mainnet once JSON API attestation is supported, with monitoring and structured rollout.  
+- **Scale to thousands:** Stress-test contract design and Firebase → FDC → contract pipeline to support thousands of users and activities across multiple cities.  
+
 
 ---
 
@@ -177,7 +188,7 @@ The Coston2 testnet provided a reliable environment for testing my smart contrac
 Repository Link: [LinkedUp Reliability Engine GitHub](https://github.com/Vasqq/linkedup-reliability-engine)
 
 Deployed Contract Address:
-0x79e8066bB6638ADb91A2eCC8b6C7419102FD43a5
+0x0xBE8BEAab49cdb09892D1d60864cE32190EA6d6D4
 
 Demo Transaction Hash:
 0x686ef396cfd9c649408da0dee92b9de910c94390bd2207bab0bd415c2c64869a
