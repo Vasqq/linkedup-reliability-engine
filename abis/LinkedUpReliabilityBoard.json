@@ -45,9 +45,9 @@
             {
                 "components": [
                     {
-                        "internalType": "string",
-                        "name": "uuid",
-                        "type": "string"
+                        "internalType": "address",
+                        "name": "walletAddress",
+                        "type": "address"
                     },
                     {
                         "internalType": "int256",
@@ -76,9 +76,9 @@
     {
         "inputs": [
             {
-                "internalType": "string",
-                "name": "uuid",
-                "type": "string"
+                "internalType": "address",
+                "name": "walletAddress",
+                "type": "address"
             }
         ],
         "name": "getReliability",
@@ -95,9 +95,9 @@
     {
         "inputs": [
             {
-                "internalType": "string",
-                "name": "uuid",
-                "type": "string"
+                "internalType": "address",
+                "name": "walletAddress",
+                "type": "address"
             }
         ],
         "name": "getTotalCheckIns",
@@ -114,9 +114,9 @@
     {
         "inputs": [
             {
-                "internalType": "string",
-                "name": "uuid",
-                "type": "string"
+                "internalType": "address",
+                "name": "walletAddress",
+                "type": "address"
             }
         ],
         "name": "getTotalMisses",

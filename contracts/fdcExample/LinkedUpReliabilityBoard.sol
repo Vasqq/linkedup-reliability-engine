@@ -13,13 +13,13 @@ struct ActivitySnapshot {
 
 // A participant's attendance record
 struct Participant {
-    string uuid;
+    address walletAddress;
     bool checkedIn;
 }
 
 // User with cumulative reliability and attendance stats
 struct LinkedUpUser {
-    string uuid;
+    address walletAddress;
     int256 reliabilityScore;
     uint256 totalCheckIns;
     uint256 totalMisses;
@@ -31,22 +31,22 @@ interface ILinkedUpReliabilityBoard {
     function getAllUsers() external view returns (LinkedUpUser[] memory);
 
     function getReliability(
-        string calldata uuid
+        address walletAddress
     ) external view returns (int256);
 
     function getTotalCheckIns(
-        string calldata uuid
+        address walletAddress
     ) external view returns (uint256);
 
     function getTotalMisses(
-        string calldata uuid
+        address walletAddress
     ) external view returns (uint256);
 }
 
 contract LinkedUpReliabilityBoard is ILinkedUpReliabilityBoard {
     // Storage for user data
-    mapping(string => LinkedUpUser) private users;
-    string[] private userUuids;
+    mapping(address => LinkedUpUser) private users;
+    address[] private userAddresses;
 
     // Configurable constants
     int256 public constant RELIABILITY_GAIN = 5;
@@ -94,10 +94,10 @@ contract LinkedUpReliabilityBoard is ILinkedUpReliabilityBoard {
             for (uint256 j = 0; j < activity.participants.length; j++) {
                 Participant memory participant = activity.participants[j];
 
-                if (!_userExists(participant.uuid)) {
-                    userUuids.push(participant.uuid);
-                    users[participant.uuid] = LinkedUpUser({
-                        uuid: participant.uuid,
+                if (!_userExists(participant.walletAddress)) {
+                    userAddresses.push(participant.walletAddress);
+                    users[participant.walletAddress] = LinkedUpUser({
+                        walletAddress: participant.walletAddress,
                         reliabilityScore: RELIABILITY_START,
                         totalCheckIns: 0,
                         totalMisses: 0
@@ -112,13 +112,13 @@ contract LinkedUpReliabilityBoard is ILinkedUpReliabilityBoard {
                 if (participant.checkedIn) {
                     int256 adjustedGain = (RELIABILITY_GAIN *
                         int256(gainMultiplier)) / 100;
-                    users[participant.uuid].reliabilityScore += adjustedGain;
-                    users[participant.uuid].totalCheckIns += 1;
+                    users[participant.walletAddress].reliabilityScore += adjustedGain;
+                    users[participant.walletAddress].totalCheckIns += 1;
                 } else {
                     int256 adjustedLoss = (RELIABILITY_LOSS *
                         int256(lossMultiplier)) / 100;
-                    users[participant.uuid].reliabilityScore += adjustedLoss;
-                    users[participant.uuid].totalMisses += 1;
+                    users[participant.walletAddress].reliabilityScore += adjustedLoss;
+                    users[participant.walletAddress].totalMisses += 1;
                 }
             }
         }
@@ -131,38 +131,38 @@ contract LinkedUpReliabilityBoard is ILinkedUpReliabilityBoard {
         override
         returns (LinkedUpUser[] memory)
     {
-        LinkedUpUser[] memory result = new LinkedUpUser[](userUuids.length);
-        for (uint256 i = 0; i < userUuids.length; i++) {
-            result[i] = users[userUuids[i]];
+        LinkedUpUser[] memory result = new LinkedUpUser[](userAddresses.length);
+        for (uint256 i = 0; i < userAddresses.length; i++) {
+            result[i] = users[userAddresses[i]];
         }
         return result;
     }
 
-    /// Look up one user’s reliability
+    /// Look up one user's reliability
     function getReliability(
-        string calldata uuid
+        address walletAddress
     ) public view override returns (int256) {
-        return users[uuid].reliabilityScore;
+        return users[walletAddress].reliabilityScore;
     }
 
-    /// Look up one user’s total check ins
+    /// Look up one user's total check ins
     function getTotalCheckIns(
-        string calldata uuid
+        address walletAddress
     ) public view returns (uint256) {
-        return users[uuid].totalCheckIns;
+        return users[walletAddress].totalCheckIns;
     }
 
-    /// Look up one user’s total misses
+    /// Look up one user's total misses
     function getTotalMisses(
-        string calldata uuid
+        address walletAddress
     ) public view returns (uint256) {
-        return users[uuid].totalMisses;
+        return users[walletAddress].totalMisses;
     }
 
     /// Internal existence check
-    function _userExists(string memory uuid) internal view returns (bool) {
-        if (userUuids.length == 0) return false;
-        bytes memory check = bytes(users[uuid].uuid);
-        return check.length > 0;
+    function _userExists(address walletAddress) internal view returns (bool) {
+        if (userAddresses.length == 0) return false;
+        // Check if the wallet address has been registered (non-zero address stored)
+        return users[walletAddress].walletAddress != address(0);
     }
 }
